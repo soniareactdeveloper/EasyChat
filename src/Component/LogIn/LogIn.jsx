@@ -1,9 +1,61 @@
 import './LogIn.css'
+import { useState } from 'react'
 import Lottie from 'lottie-react'
-import animation  from '../../../public/animation/AnimationLogo.json'
 import { Link } from 'react-router-dom'
+import { IoIosEyeOff } from "react-icons/io";
+import { IoIosEye } from "react-icons/io";
+import animation  from '../../../public/animation/AnimationLogo.json'
 
 const LogIn = () => {
+  // declare variables 
+  const [show , setShow]               = useState(false)
+  const [email, setEmail]              = useState()
+  const [emailerr, setEmailerr]        = useState()
+  const [password, setPassword]        = useState()
+  const [passerr, setPasserr]          = useState()
+
+
+
+  // icon 
+  const handleIcon = ()  =>{
+    setShow(!show)
+  }
+
+  // email
+  const handleEmail = (e) =>{
+      setEmail(e.target.value)
+      setEmailerr('')
+  }
+
+  // password
+  const handlePassword = (e) =>{
+      setPassword(e.target.value)
+      setPasserr('')
+  }
+
+
+  // form validation
+  const handleSubmit = (e) =>{
+    e.preventDefault()
+    
+    // condition
+    if(!email){
+      setEmailerr('Please enter your email')
+    }else {
+      if(!password){
+        setPasserr('Please enter your password')
+      }else {
+        console.log ("submit")
+      }
+    }
+  }
+  
+
+
+
+
+
+
   return (
     <>
        <div className="main">
@@ -19,18 +71,28 @@ const LogIn = () => {
                 <div className="mt-4">
                   <h1 className='font-sans font-bold text-[64px] text-[#5C7BE0] text-center'>LogIn</h1>
                   {/* form */}
-                  <form className='mt-8'>
+                  <form onSubmit={handleSubmit} className='mt-8'>
 
                     {/* email  */}
                     <label htmlFor="email">Email</label>
                     <br />
-                    <input type="text" id="email" name="email"/>
+                    <input onChange={handleEmail} type="text" id="email" name="email"/>
+                    <p className="text-[14px] text-red-600 font-sans font-normal">{emailerr}</p>
 
                     {/* password */}
                     <div className='mt-3'>
                         <label  htmlFor="pass">Password</label>
                         <br />
-                        <input type="password" id="pass" name="pass"/>
+                        <div className='relative'>
+                          {
+                            show?
+                            <IoIosEye onClick={handleIcon}  className='absolute top-[20%] right-[30px] font-sans text-[24px] text-black'/>
+                            :
+                            <IoIosEyeOff onClick={handleIcon}  className='absolute top-[20%] right-[30px] font-sans text-[24px] text-black'/>
+                          }
+                           <input onChange={handlePassword} type={show? "text" : "password" } id="pass" name="pass"/>
+                        </div>
+                        <p className="text-[14px] text-red-600 font-sans font-normal">{passerr}</p>
                     </div>
 
                     <div className='flex items-center justify-between'>
@@ -48,7 +110,7 @@ const LogIn = () => {
 
                     {/* LogIn Button */}
                     <div className='flex justify-center mt-4'>
-                    <Link className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#4a68c4] active:scale-50' to="/home">LogIn </Link>
+                    <button className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#4a68c4] active:scale-50' type='submit'>LogIn </button>
                     </div>
 
                     {/* Link to Register  */}
