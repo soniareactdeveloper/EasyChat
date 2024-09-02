@@ -1,6 +1,6 @@
 import './Register.css'
 import Lottie from 'lottie-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import animation  from '../../../public/animation/AnimationLogo.json'
 import { useState } from 'react'
 import { IoIosEyeOff } from "react-icons/io";
@@ -8,6 +8,7 @@ import { IoIosEye } from "react-icons/io";
 import 'react-toastify/dist/ReactToastify.css';
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { BeatLoader } from 'react-spinners'
 
 
 const Register = () => {
@@ -20,14 +21,16 @@ const Register = () => {
   const [emailerr, setEmailerr]               = useState()
   const [password, setPassword]               = useState()
   const [passerr, setPasserr]                 = useState()
-  const [passConfirm, setPassConfirm]       = useState()
-  const [passConfirmErr, setPassConfirmErr] = useState()
+  const [passConfirm, setPassConfirm]         = useState()
+  const [passConfirmErr, setPassConfirmErr]   = useState()
+  const navigate                              = useNavigate()
 
 
 
   // ===================================== firebase part  ================================
-  // firebase auth
-  const auth = getAuth();
+    // firebase auth
+    const auth                   = getAuth();
+    const [loading, setLoading]  = useState(false)
 
 
 
@@ -84,29 +87,82 @@ const Register = () => {
         } else if(password !== passConfirm) {
           setPassConfirmErr('Passwords do not match.');
         }else {
-          createUserWithEmailAndPassword(auth, email, password)
+          // set loading 
+          setLoading(true)
+
+
+          // firebase create user with email and confirm password
+          createUserWithEmailAndPassword(auth, email, passConfirm)
           .then((userCredential) => {
             // Signed up 
             const user = userCredential.user;
-            // Toastify showing
-              toast.success('Register Successful', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-                });
+            //================================ Toastify showing  ========================  
+            toast.success('Register Successful', {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+            });
+           // set loading 
+            setLoading(false)
+            
+            setTimeout(() => {
+              navigate('/');
+          }, 3000); // 3 seconds delay to match the autoClose time
               
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            // ..
-          });
+            
+            //====================== Toast message showing ====================
+            if (errorCode === "auth/weak-password") {
+                toast.error('Please select a strong password', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    transition: Bounce,
+                });
+            } else if (errorCode === 'auth/email-already-in-use') {
+                toast.error('Email already in use', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    transition: Bounce,
+                });
+            } else {
+                toast.error('An error occurred: ' + errorMessage, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    transition: Bounce,
+                });
+            }
+
+             // set loading 
+             setLoading(false)
+        });
+        
         }
   }
   return (
@@ -176,15 +232,19 @@ const Register = () => {
                     </div>
 
                    {/* LogIn Button */}
+                    {
+                      loading?
+                      <div className='font-sans font-black text-[26px] text-white w-[330px] h-[47px] p-1 bg-[#5C7BE0] text-center rounded-[8px] transition ease-linear delay-100 hover:bg-[#4a68c4] flex justify-center items-center mt-4'>
+                        <BeatLoader color='white' />
+                      </div>
+                      :
                       <div className='flex justify-center mt-4'>
-                        <button
-                          className='font-sans font-semibold ease-out duration-300 text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] 
-                          hover:bg-[#9B59B6] hover:shadow-lg  active:bg-[#7D3C98]'
-                          type='submit'
-                        >
+                        <button className='font-sans font-semibold ease-out duration-300 text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#9B59B6] hover:shadow-lg  active:bg-[#7D3C98]' type='submit'>
                           Register
                         </button>
                       </div>
+                    }
+
 
                     {/* Link to Register  */}
                     <div className='flex justify-center mt-4'>

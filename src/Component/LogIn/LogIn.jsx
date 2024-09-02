@@ -7,6 +7,8 @@ import { IoIosEye } from "react-icons/io";
 import animation  from '../../../public/animation/AnimationLogo.json'
 import 'react-toastify/dist/ReactToastify.css';
 import { Bounce, toast, ToastContainer } from 'react-toastify'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { BeatLoader } from 'react-spinners';
 
 const LogIn = () => {
   // declare variables 
@@ -15,10 +17,21 @@ const LogIn = () => {
   const [emailerr, setEmailerr]        = useState()
   const [password, setPassword]        = useState()
   const [passerr, setPasserr]          = useState()
+  
+  
+  // ===================================== firebase part  ================================
+  // firebase auth
+  const auth                           = getAuth();
+  const [loading, setLoading]          = useState(false)
 
 
 
-  // icon 
+
+
+  // ===================================== firebase part end ================================
+
+     
+  //password  Icon
   const handleIcon = ()  =>{
     setShow(!show)
   }
@@ -46,17 +59,52 @@ const LogIn = () => {
     }if(!password){
       setPasserr('Please enter your password')
     }else{
-      toast.success('Log In successful', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-        });
+      // .....................Loading 
+      setLoading(true)
+
+
+      // firebase create user with email and confirm password
+      signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+
+
+        // .................... Toast message ......................
+        toast.success('log in successs', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
+
+           // .....................Loading 
+           setLoading(false)
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+         
+
+        // .................... Toast message ......................
+        toast.error(error.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
+      });
         
     }
   }
@@ -118,11 +166,22 @@ const LogIn = () => {
                     </div>
 
 
-
                     {/* LogIn Button */}
-                    <div className='flex justify-center mt-4'>
-                     <button className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#4a68c4] ease-linear delay-100 active:scale-50' type='submit'>LogIn </button>
-                    </div>
+                    {/* ========================= spinner ====================== */}
+                   {
+                     loading?
+                      <div className='font-sans font-black text-[26px] text-white w-[330px] h-[47px] p-1 bg-[#5C7BE0] text-center rounded-[8px] transition ease-linear delay-100 hover:bg-[#4a68c4] flex justify-center items-center mt-4'>
+                        <BeatLoader color='white' />
+                      </div>
+                      :
+                      <div className='flex justify-center mt-4'>
+                        <button className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] transition ease-linear delay-100 hover:bg-[#4a68c4]' type='submit'>
+                          LogIn
+                        </button>
+                      </div>
+
+                   }
+
 
                     {/* Link to Register  */}
                     <div className='flex justify-center mt-4'>
