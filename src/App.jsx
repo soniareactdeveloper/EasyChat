@@ -4,6 +4,8 @@ import LogInPage from './Pages/LogInPage'
 import RegisterPage from './Pages/RegisterPage'
 import ForgetPage from './Pages/ForgetPage'
 import NotFound from './Pages/NotFound'
+import { ToastContainer } from 'react-toastify'
+import { database } from './firebase.Config'
 
 function App() {
   const route = createBrowserRouter(
@@ -20,6 +22,7 @@ function App() {
   return (
     <>
      <RouterProvider router={route} />
+     <ToastContainer />
     </>
   )
 }

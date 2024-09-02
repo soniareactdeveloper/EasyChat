@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import { IoIosEyeOff } from "react-icons/io";
 import { IoIosEye } from "react-icons/io";
 import animation  from '../../../public/animation/AnimationLogo.json'
+import 'react-toastify/dist/ReactToastify.css';
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 
 const LogIn = () => {
   // declare variables 
@@ -41,12 +43,21 @@ const LogIn = () => {
     // condition
     if(!email){
       setEmailerr('Please enter your email')
-    }else {
-      if(!password){
-        setPasserr('Please enter your password')
-      }else {
-        console.log ("submit")
-      }
+    }if(!password){
+      setPasserr('Please enter your password')
+    }else{
+      toast.success('Log In successful', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        });
+        
     }
   }
   
@@ -110,7 +121,7 @@ const LogIn = () => {
 
                     {/* LogIn Button */}
                     <div className='flex justify-center mt-4'>
-                    <button className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#4a68c4] active:scale-50' type='submit'>LogIn </button>
+                     <button className='font-sans font-black text-[26px] text-white w-[330px] p-1 bg-[#5C7BE0] text-center rounded-[8px] hover:bg-[#4a68c4] ease-linear delay-100 active:scale-50' type='submit'>LogIn </button>
                     </div>
 
                     {/* Link to Register  */}
@@ -122,6 +133,7 @@ const LogIn = () => {
               </div>
            </div>
           </div>
+          <ToastContainer />
        </div>
     </>
   )
