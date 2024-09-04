@@ -1,14 +1,16 @@
 import './LogIn.css'
 import { useState } from 'react'
 import Lottie from 'lottie-react'
-import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
 import { IoIosEyeOff } from "react-icons/io";
 import { IoIosEye } from "react-icons/io";
-import animation  from '../../../public/animation/AnimationLogo.json'
 import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from 'react-router-dom'
+import { userData } from '../../Slice/UserDataSlice';
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { BeatLoader } from 'react-spinners';
+import animation  from '../../../public/animation/AnimationLogo.json'
 
 const LogIn = () => {
   // declare variables 
@@ -17,12 +19,15 @@ const LogIn = () => {
   const [emailerr, setEmailerr]        = useState()
   const [password, setPassword]        = useState()
   const [passerr, setPasserr]          = useState()
+  // react-redux variables
+  const dispatch                       = useDispatch()
   
   
   // ===================================== firebase part  ================================
   // firebase auth
   const auth                           = getAuth();
   const [loading, setLoading]          = useState(false)
+  const navigate                       = useNavigate()
 
 
 
@@ -66,31 +71,62 @@ const LogIn = () => {
       // firebase create user with email and confirm password
       signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+
         // Signed in 
         const user = userCredential.user;
 
-
+        
         // .................... Toast message ......................
-        toast.success('log in successs', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-          });
+        if(!user.emailVerified) {
+          toast.error('Please Varify Your Email', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+            });
+        }else {
+          toast.success('Log in Successful', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+            });
+
+            // sending data 
+            dispatch(userData(user))
+        }
+         
+        // saving data in the local storage
+        
+        localStorage.setItem('userData', JSON.stringify(user))
+         
 
            // .....................Loading 
            setLoading(false)
+
+          //  console
+          console.log(user)
+
+          // navigate to home page
+          setTimeout(() => {
+            navigate('/');
+          }, 1000); 
       })
       .catch((error) => {
+         // .....................Loading 
+        setLoading(false)
         const errorCode = error.code;
         const errorMessage = error.message;
-
-         
 
         // .................... Toast message ......................
         toast.error(error.message, {

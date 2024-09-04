@@ -1,21 +1,21 @@
 import './Register.css'
+import { useState } from 'react'
 import Lottie from 'lottie-react'
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
+import { BeatLoader } from 'react-spinners'
+import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom'
 import animation  from '../../../public/animation/AnimationLogo.json'
-import { useState } from 'react'
-import { IoIosEyeOff } from "react-icons/io";
-import { IoIosEye } from "react-icons/io";
-import 'react-toastify/dist/ReactToastify.css';
 import { Bounce, toast, ToastContainer } from 'react-toastify'
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { BeatLoader } from 'react-spinners'
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 
 
 const Register = () => {
   // variables declaration
   const [show, setShow]                       = useState(false)
   const [confirmShow, setConfirmShow]         = useState(false)
-  const [user, setUser]                       = useState()
+  const [userName, setUser]                   = useState()
   const [usererr, setUsererr]                 = useState()
   const [email, setEmail]                     = useState()
   const [emailerr, setEmailerr]               = useState()
@@ -76,7 +76,7 @@ const Register = () => {
         e.preventDefault();
 
         // condition
-        if (!user) {
+        if (!userName) {
           setUsererr('User Name is required.');
         } else if (!email) {
           setEmailerr('Email is required.');
@@ -93,11 +93,20 @@ const Register = () => {
 
           // firebase create user with email and confirm password
           createUserWithEmailAndPassword(auth, email, passConfirm)
+
           .then((userCredential) => {
             // Signed up 
             const user = userCredential.user;
-            //================================ Toastify showing  ========================  
-            toast.success('Register Successful', {
+
+            // .............Update a user's profile.................
+            updateProfile(auth.currentUser, {
+              displayName: userName,
+              photoURL:"https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png"
+            })
+
+          
+            // .............Toast message .................
+            toast.success('Varify Your Email', {
               position: "top-right",
               autoClose: 3000,
               hideProgressBar: false,
@@ -108,19 +117,23 @@ const Register = () => {
               theme: "colored",
               transition: Bounce,
             });
+
            // set loading 
             setLoading(false)
             
+            // .............Redirect to login page.................
             setTimeout(() => {
-              navigate('/');
-          }, 3000); // 3 seconds delay to match the autoClose time
+              navigate('/login');
+            }, 2000); // 3 seconds delay to match the autoClose time
+
+          sendEmailVerification(auth.currentUser)
               
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             
-            //====================== Toast message showing ====================
+            // .............Toast message .................
             if (errorCode === "auth/weak-password") {
                 toast.error('Please select a strong password', {
                     position: "top-right",
@@ -248,7 +261,7 @@ const Register = () => {
 
                     {/* Link to Register  */}
                     <div className='flex justify-center mt-4'>
-                       <Link className='font-sans font-normal text-[18px] text-[#8f91df]' to='/'>Don't have   an account? <span className='text-[#5d3ff2] font-semibold'>LogIn</span></Link>
+                       <Link className='font-sans font-normal text-[18px] text-[#8f91df]' to='/login'>Don't have   an account? <span className='text-[#5d3ff2] font-semibold'>LogIn</span></Link>
                     </div>
                   </form>
                 </div>

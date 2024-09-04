@@ -1,12 +1,23 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Lottie from 'lottie-react'
-import Forgetanimation  from '../../../public/animation/forgetAni.json'
 import { useState } from "react"
+import Forgetanimation  from '../../../public/animation/forgetAni.json'
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 const Forget = () => {
+  // variables declared here
   const [email, setEmail]             = useState('');
   const [emailerr, setEmailerr]       = useState('');
   
+
+// =============================== firebase ====================
+
+const auth     = getAuth();
+const navigate = useNavigate()
+
+
+// ============================= firebase end =======================
+
 
 
   // email
@@ -19,11 +30,25 @@ const Forget = () => {
   // form submit 
   const handleSubmit = (e) =>{
     e.preventDefault();
+
     // condition
     if(!email){
       setEmailerr('Please Enter Email')
     }else {
-      console.error('Please Enter Email')
+      sendPasswordResetEmail(auth, email)
+      .then(() => {
+        // Password reset email sent!
+        alert('Code sent to your Email')
+
+          // ...... navigate back
+          navigate("/login")
+
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+        });
     }
   }
  
@@ -58,7 +83,7 @@ const Forget = () => {
 
                     {/* Link to Register  */}
                     <div className='flex justify-center mt-4'>
-                        <Link className='font-sans font-normal text-[18px] text-[#393a79]' to='/'>Back to  <span className='text-[#5d3ff2] font-semibold'>LOGIN</span></Link>
+                        <Link className='font-sans font-normal text-[18px] text-[#393a79]' to='/login'>Back to  <span className='text-[#5d3ff2] font-semibold'>LOGIN</span></Link>
                     </div>
                </form>
              </div>
