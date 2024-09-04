@@ -101,7 +101,7 @@ const Register = () => {
             // .............Update a user's profile.................
             updateProfile(auth.currentUser, {
               displayName: userName,
-              photoURL:"https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-zxne30hp.png"
+              photoURL:"https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=600"
             })
 
           

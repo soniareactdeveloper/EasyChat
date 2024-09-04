@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { Outlet, useNavigate } from "react-router-dom"
+import Navbar from "../Component/Navbar/Navbar"
 
 
 const LayoutOne = () => {
@@ -18,7 +19,11 @@ const LayoutOne = () => {
 
   return (
     <>
-      <Outlet/>
+      <div className="flex gap-7">
+        <Navbar/>
+        <Outlet/>
+      </div>
+
     </>
   )
 }

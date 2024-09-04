@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import LayoutOne from './Layouts/LayoutOne'
 import HomePage from './Pages/HomePage'
 import { database } from './firebase.Config'
+import UserCardPage from './Pages/UserCardPage'
 
 function App() {
   const route = createBrowserRouter(
@@ -16,10 +17,11 @@ function App() {
         <Route path='/login'    element={<LogInPage/>}/>
         <Route path="/register" element={<RegisterPage/>}/>
         <Route path="/forget"   element={<ForgetPage/>}/>
-        <Route path='*'         element={<NotFound/>}/>
         <Route path='/'         element={<LayoutOne/>}>
            <Route index         element={<HomePage/>}/>
+           <Route path='/card'  element={<UserCardPage/>}/>
         </Route>
+        <Route path='*'         element={<NotFound/>}/>
       </Route>
     )
   )

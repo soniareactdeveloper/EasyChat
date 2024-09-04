@@ -1,7 +1,7 @@
 import './LogIn.css'
 import { useState } from 'react'
 import Lottie from 'lottie-react'
-import { useDispatch } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { IoIosEyeOff } from "react-icons/io";
 import { IoIosEye } from "react-icons/io";
@@ -11,14 +11,17 @@ import { userData } from '../../Slice/UserDataSlice';
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import animation  from '../../../public/animation/AnimationLogo.json'
+import { getDatabase, ref, set } from "firebase/database";
 
 const LogIn = () => {
   // declare variables 
   const [show , setShow]               = useState(false)
+  const [loading, setLoading]          = useState(false)
   const [email, setEmail]              = useState()
   const [emailerr, setEmailerr]        = useState()
   const [password, setPassword]        = useState()
   const [passerr, setPasserr]          = useState()
+  const navigate                       = useNavigate()
   // react-redux variables
   const dispatch                       = useDispatch()
   
@@ -26,8 +29,7 @@ const LogIn = () => {
   // ===================================== firebase part  ================================
   // firebase auth
   const auth                           = getAuth();
-  const [loading, setLoading]          = useState(false)
-  const navigate                       = useNavigate()
+  const db                             = getDatabase();
 
 
 
@@ -121,6 +123,13 @@ const LogIn = () => {
           setTimeout(() => {
             navigate('/');
           }, 1000); 
+
+          // set user data to database
+          set(ref(db, 'Allusers/' + user.uid), {
+            userName: user.displayName,
+            userPhoto: user.photoURL,
+            userId: user.uid
+          })
       })
       .catch((error) => {
          // .....................Loading 

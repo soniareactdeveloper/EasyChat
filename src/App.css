@@ -12,4 +12,10 @@ a {
   display: inline-block;
   text-decoration: none;
 }
+body {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(to bottom, #EBD3F8, #C0DFF8);
+}
 /* ====================== common css end ======================== */
+
