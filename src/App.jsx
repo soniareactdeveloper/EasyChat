@@ -9,17 +9,19 @@ import LayoutOne from './Layouts/LayoutOne'
 import HomePage from './Pages/HomePage'
 import { database } from './firebase.Config'
 import UserCardPage from './Pages/UserCardPage'
+import FriendRequest from './Component/FriendRequest/FriendRequest'
 
 function App() {
   const route = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        <Route path='/login'    element={<LogInPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-        <Route path="/forget"   element={<ForgetPage/>}/>
-        <Route path='/'         element={<LayoutOne/>}>
-           <Route index         element={<HomePage/>}/>
-           <Route path='/card'  element={<UserCardPage/>}/>
+        <Route path='/login'            element={<LogInPage/>}/>
+        <Route path="/register"         element={<RegisterPage/>}/>
+        <Route path="/forget"           element={<ForgetPage/>}/>
+        <Route path='/'                 element={<LayoutOne/>}>
+           <Route index                 element={<HomePage/>}/>
+           <Route path='/card'          element={<UserCardPage/>}/>
+           <Route path='/friendRequest' element={<FriendRequest/>}/>
         </Route>
         <Route path='*'         element={<NotFound/>}/>
       </Route>

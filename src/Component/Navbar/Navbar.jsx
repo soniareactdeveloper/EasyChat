@@ -49,14 +49,14 @@ const Navbar = () => {
             Settings
           </NavLink>
           <NavLink
-            to="/notifications"
+            to="/friendRequest"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-[#5C7BE0] p-3 rounded-md font-semibold text-[20px] transition-all duration-300 ease-in-out transform hover:scale-105"
                 : "text-[#5C7BE0] p-3 rounded-md font-semibold text-[20px] hover:bg-[#5C7BE0] hover:text-white transition-all duration-300 ease-in-out transform hover:scale-105"
             }
           >
-            Notifications
+            Friend Request
           </NavLink>
           <NavLink
             to="/messages"
