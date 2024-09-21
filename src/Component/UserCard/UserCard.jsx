@@ -1,11 +1,11 @@
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { getDatabase, ref, onValue, set, push, remove } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const UserCard = () => {
   // =============== state
   const [allUsers, setAllUsers] = useState([]);
-  const [sentRequests, setSentRequests] = useState([]); 
+  const [sentRequests, setSentRequests] = useState([]); // To track sent friend requests
 
   // getting data from redux 
   const sliceUser = useSelector((state) => state.counter.value);
@@ -41,17 +41,24 @@ const UserCard = () => {
 
   // function to handle friend request
   const handleUser = (friendData) => {
-    set(push(ref(db, 'friendRequest/')), {
+    const friendRequestRef = push(ref(db, 'friendRequest/'));
+    
+    // Send friend request
+    set(friendRequestRef, {
       reciverId: sliceUser.uid,
       reciverName: sliceUser.displayName,
       reciverPhoto: sliceUser.photoURL,
       senderId: friendData.userId,
       senderName: friendData.userName,
       senderPhoto: friendData.userPhoto,
+    })
+    .then(() => {
+      // After adding friend, remove request from database if needed
+      remove(ref(db, 'friendRequest/' + friendData.key));
+    })
+    .catch((error) => {
+      console.error("Error sending friend request:", error);
     });
-
-    // Update the sent requests state after sending a request
-    setSentRequests((prevRequests) => [...prevRequests, friendData.userId]);
   };
 
   return (

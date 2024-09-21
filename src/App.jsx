@@ -7,9 +7,10 @@ import NotFound from './Pages/NotFound'
 import { ToastContainer } from 'react-toastify'
 import LayoutOne from './Layouts/LayoutOne'
 import HomePage from './Pages/HomePage'
-import { database } from './firebase.Config'
 import UserCardPage from './Pages/UserCardPage'
 import FriendRequest from './Component/FriendRequest/FriendRequest'
+import Friend from './Component/Friend/Friend'
+import { database } from './firebase.Config'
 
 function App() {
   const route = createBrowserRouter(
@@ -22,8 +23,9 @@ function App() {
            <Route index                 element={<HomePage/>}/>
            <Route path='/card'          element={<UserCardPage/>}/>
            <Route path='/friendRequest' element={<FriendRequest/>}/>
+           <Route path='/friends'       element={<Friend/>}/>
         </Route>
-        <Route path='*'         element={<NotFound/>}/>
+        <Route path='*'                 element={<NotFound/>}/>
       </Route>
     )
   )
